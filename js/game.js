@@ -6,7 +6,8 @@
 
 // 게임 상태를 관리하는 변수들
 let score = 0;
-let timeLeft = CONFIG.GAME_TIME;
+let gameTime = CONFIG.GAME_TIME; // 플레이어가 고른 시간 (기본값은 config 에서)
+let timeLeft = gameTime;
 let gameInterval;
 let isGameRunning = false; // 게임이 실행 중인지 확인하는 변수
 
@@ -54,6 +55,7 @@ function endGame() {
     clearInterval(gameInterval);
     UI.clearTarget();                                   // 타겟 문자 제거
     UI.renderGameOver(score);
+    UI.setTimeOptionsEnabled(true);                      // 시간 변경 다시 허용
     document.removeEventListener('keydown', checkInput); // 키 입력 이벤트 제거
     isGameRunning = false;                               // 게임 실행 상태를 종료로 설정
 }
@@ -64,9 +66,10 @@ function startGame() {
     isGameRunning = true;      // 게임 실행 상태를 시작으로 설정
 
     score = 0;
-    timeLeft = CONFIG.GAME_TIME;
+    timeLeft = gameTime;
     UI.renderScore(score);
     UI.renderTimer(timeLeft);
+    UI.setTimeOptionsEnabled(false); // 게임 중에는 시간 변경 잠금
     setNewTargetChar(); // 첫 번째 타겟 문자 설정
 
     gameInterval = setInterval(updateTimer, CONFIG.TICK_MS); // 일정 간격으로 타이머 업데이트
@@ -77,19 +80,34 @@ function startGame() {
 function resetGame() {
     clearInterval(gameInterval); // 타이머 정지
     score = 0;
-    timeLeft = CONFIG.GAME_TIME;
+    timeLeft = gameTime;
     UI.renderScore(score);
     UI.renderTimer(timeLeft);
     UI.clearTarget();                                    // 타겟 문자 초기화
+    UI.setTimeOptionsEnabled(true);                      // 시간 변경 다시 허용
     document.removeEventListener('keydown', checkInput); // 키 입력 이벤트 제거
     isGameRunning = false;                               // 게임 실행 상태를 종료로 설정
+}
+
+// 플레이어가 시간 버튼을 눌렀을 때
+function selectTime(seconds) {
+    if (isGameRunning) return; // 게임 중에는 바꿀 수 없음
+
+    gameTime = seconds;
+    timeLeft = gameTime;
+    UI.renderTimer(timeLeft);
+    UI.highlightTime(gameTime);
 }
 
 // 페이지 로드 시 초기 설정
 function initGame() {
     UI.renderScore(0);
-    UI.renderTimer(CONFIG.GAME_TIME);
+    UI.renderTimer(gameTime);
     UI.clearTarget(); // 게임 시작 전 타겟 문자 초기화
+
+    // 시간 선택 버튼 생성 후 기본값 강조
+    UI.renderTimeOptions(CONFIG.TIME_OPTIONS, selectTime);
+    UI.highlightTime(gameTime);
 
     // HTML 의 onclick 대신 여기서 버튼을 연결 (골격과 동작 분리)
     UI.startButton.addEventListener('click', startGame);

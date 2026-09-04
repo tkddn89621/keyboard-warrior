@@ -32,3 +32,27 @@ body {
     font-size: var(--timer-size);
     margin-top: 10px;
 }
+
+/* --- 시간 선택 --- */
+.game__times {
+    margin-top: 20px;
+}
+
+.game__times-label {
+    font-size: 14px;
+    margin-right: 8px;
+}
+
+.game__time-options {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.game__time-option.is-selected {
+    font-weight: bold;
+}
+
+.game__time-option:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
