@@ -14,6 +14,9 @@ const UI = {
     startButton: document.getElementById('startButton'),
     resetButton: document.getElementById('resetButton'),
     timeOptionsElement: document.getElementById('timeOptions'),
+    modeSelect: document.getElementById('modeSelect'),
+    comboElement: document.getElementById('combo'),
+    typedInput: document.getElementById('typedInput'),
 
     // 출제된 문자를 표시
     renderTarget(char) {
@@ -28,6 +31,16 @@ const UI = {
     // 점수 표시
     renderScore(score) {
         this.scoreElement.innerText = `점수: ${score}`;
+    },
+
+    renderCombo(combo, bonus) {
+        this.comboElement.innerText = combo > 0
+            ? `콤보: ${combo}${bonus > 0 ? ` (+${bonus} 보너스)` : ''}`
+            : '콤보: 0';
+    },
+
+    renderTypedInput(text) {
+        this.typedInput.value = text;
     },
 
     // 남은 시간 표시

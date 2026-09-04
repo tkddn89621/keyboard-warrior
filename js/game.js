@@ -6,14 +6,21 @@
 
 // 게임 상태를 관리하는 변수들
 let score = 0;
-let gameTime = CONFIG.GAME_TIME; // 플레이어가 고른 시간 (기본값은 config 에서)
+let selectedMode = 'easy';                              // 난이도 (문자셋 / 감점 / 기본 시간)
+let gameTime = CONFIG.MODES[selectedMode].GAME_TIME;    // 이번 판 시간. 시간 버튼으로 바꿀 수 있음
 let timeLeft = gameTime;
 let gameInterval;
 let isGameRunning = false; // 게임이 실행 중인지 확인하는 변수
+let combo = 0;
+
+function getModeConfig() {
+    return CONFIG.MODES[selectedMode];
+}
 
 // 랜덤 문자를 생성하는 함수
 function getRandomChar() {
-    return CONFIG.CHARS[Math.floor(Math.random() * CONFIG.CHARS.length)];
+    const chars = getModeConfig().CHARS;
+    return chars[Math.floor(Math.random() * chars.length)];
 }
 
 // 새로운 타겟 문자를 설정하는 함수
@@ -25,18 +32,31 @@ function setNewTargetChar() {
 function checkInput(event) {
     const inputChar = event.key;
 
-    // CapsLock, Shift 등의 키는 무시
-    if (CONFIG.EXCLUDED_KEYS.includes(inputChar)) {
+    // 문자 입력이 아닌 키는 무시
+    if (CONFIG.EXCLUDED_KEYS.includes(inputChar) || inputChar.length !== 1) {
         return;
     }
 
-    // 입력 문자가 타겟 문자와 일치하면 점수 증가, 아니면 점수 감소
-    score += (inputChar === UI.targetCharElement.innerText)
-        ? CONFIG.SCORE_CORRECT
-        : CONFIG.SCORE_WRONG;
+    UI.renderTypedInput(inputChar);
 
-    // 업데이트된 점수와 새로운 타겟 문자 표시
+    const isCorrect = inputChar === UI.targetCharElement.textContent;
+    let scoreChange = getModeConfig().SCORE_WRONG;
+    let bonus = 0;
+
+    if (isCorrect) {
+        combo++;
+        bonus = combo >= CONFIG.COMBO_START ? CONFIG.COMBO_BONUS : 0;
+        scoreChange = CONFIG.SCORE_CORRECT + bonus;
+    } else {
+        combo = 0;
+    }
+
+    // 오답 감점이 있어도 점수는 0점 아래로 내려가지 않음
+    score = Math.max(0, score + scoreChange);
+
+    // 업데이트된 점수와 콤보, 새로운 타겟 문자 표시
     UI.renderScore(score);
+    UI.renderCombo(combo, bonus);
     setNewTargetChar();
 }
 
@@ -54,6 +74,7 @@ function updateTimer() {
 function endGame() {
     clearInterval(gameInterval);
     UI.clearTarget();                                   // 타겟 문자 제거
+    UI.renderCombo(combo, 0);
     UI.renderGameOver(score);
     UI.setTimeOptionsEnabled(true);                      // 시간 변경 다시 허용
     document.removeEventListener('keydown', checkInput); // 키 입력 이벤트 제거
@@ -66,9 +87,12 @@ function startGame() {
     isGameRunning = true;      // 게임 실행 상태를 시작으로 설정
 
     score = 0;
-    timeLeft = gameTime;
+    combo = 0;
+    timeLeft = gameTime; // 모드 기본 시간 또는 플레이어가 고른 시간
     UI.renderScore(score);
     UI.renderTimer(timeLeft);
+    UI.renderCombo(combo, 0);
+    UI.renderTypedInput('');
     UI.setTimeOptionsEnabled(false); // 게임 중에는 시간 변경 잠금
     setNewTargetChar(); // 첫 번째 타겟 문자 설정
 
@@ -80,9 +104,12 @@ function startGame() {
 function resetGame() {
     clearInterval(gameInterval); // 타이머 정지
     score = 0;
+    combo = 0;
     timeLeft = gameTime;
     UI.renderScore(score);
     UI.renderTimer(timeLeft);
+    UI.renderCombo(combo, 0);
+    UI.renderTypedInput('');
     UI.clearTarget();                                    // 타겟 문자 초기화
     UI.setTimeOptionsEnabled(true);                      // 시간 변경 다시 허용
     document.removeEventListener('keydown', checkInput); // 키 입력 이벤트 제거
@@ -103,6 +130,8 @@ function selectTime(seconds) {
 function initGame() {
     UI.renderScore(0);
     UI.renderTimer(gameTime);
+    UI.renderCombo(0, 0);
+    UI.renderTypedInput('');
     UI.clearTarget(); // 게임 시작 전 타겟 문자 초기화
 
     // 시간 선택 버튼 생성 후 기본값 강조
@@ -112,6 +141,21 @@ function initGame() {
     // HTML 의 onclick 대신 여기서 버튼을 연결 (골격과 동작 분리)
     UI.startButton.addEventListener('click', startGame);
     UI.resetButton.addEventListener('click', resetGame);
+    UI.modeSelect.addEventListener('change', (event) => {
+        if (isGameRunning) {
+            UI.modeSelect.value = selectedMode;
+            return;
+        }
+
+        selectedMode = event.target.value;
+
+        // 모드를 바꾸면 그 모드의 기본 시간으로 되돌립니다.
+        // (그 뒤에 시간 버튼으로 다시 조절할 수 있습니다)
+        gameTime = getModeConfig().GAME_TIME;
+        timeLeft = gameTime;
+        UI.renderTimer(timeLeft);
+        UI.highlightTime(gameTime);
+    });
 }
 
 // 게임 초기화 함수 호출

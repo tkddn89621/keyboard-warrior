@@ -24,6 +24,8 @@
     <main class="game">
         <h1 class="game__title">Typing Game</h1>
 
+        <img class="game__character" src="assets/hello-kitty.png" alt="헬로키티 캐릭터">
+
         <p class="game__guide">아래 문자를 입력하세요. (소/대문자 구분)</p>
 
         <!-- 지금 입력해야 할 문자가 표시되는 곳 -->
@@ -32,6 +34,8 @@
         <div class="game__status">
             <div class="game__score" id="score"></div>
             <div class="game__timer" id="timer"></div>
+            <div class="game__combo" id="combo"></div>
+            <input class="game__input" id="typedInput" type="text" placeholder="입력한 문자가 여기에 표시됩니다" readonly>
         </div>
 
         <!-- 시간 선택 버튼이 들어갈 자리 (버튼은 js/ui.js 가 만들어 넣습니다) -->
@@ -39,6 +43,13 @@
             <span class="game__times-label">시간</span>
             <div class="game__time-options" id="timeOptions"></div>
         </div>
+        <label class="game__mode">
+            난이도
+            <select id="modeSelect">
+                <option value="easy">Easy</option>
+                <option value="hard">Hard</option>
+            </select>
+        </label>
 
         <div class="game__controls">
             <button type="button" class="game__button" id="startButton">Start</button>

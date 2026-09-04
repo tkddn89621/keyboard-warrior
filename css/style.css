@@ -6,30 +6,258 @@
  */
 
 :root {
-    --target-size: 50px;
-    --score-size: 30px;
-    --timer-size: 20px;
+    --pink: #f25b83;
+    --dark-pink: #bf315d;
+    --pale-pink: #fff0f5;
+    --blush: #ffd5e1;
+    --ink: #4a2735;
+    --white: #fffdfb;
+    --gold: #f2b84b;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    margin: 0;
+    padding: 32px 16px;
+    color: var(--ink);
+    background: linear-gradient(135deg, #fff7fa 0%, #ffe7ef 52%, #fff8f0 100%);
+    font-family: "Trebuchet MS", "Malgun Gothic", sans-serif;
+}
+
+.game {
+    position: relative;
+    width: min(100%, 540px);
+    padding: 42px 38px 36px;
+    border: 3px solid var(--pink);
+    border-radius: 28px;
+    background: rgba(255, 253, 251, 0.95);
+    box-shadow: 0 20px 50px rgba(174, 54, 93, 0.2);
     text-align: center;
-    margin-top: 50px;
+}
+
+.game__title {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    color: var(--dark-pink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(32px, 8vw, 48px);
+}
+
+.game__title::before {
+    content: none;
+}
+
+.game__title::after {
+    display: block;
+    margin: 11px auto 0;
+    color: var(--gold);
+    content: "HELLO TYPING";
+    font-family: "Trebuchet MS", sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 4px;
+}
+
+.game__guide {
+    margin: 22px 0 20px;
+    color: #8c5366;
+    font-size: 15px;
+}
+
+.game__character {
+    display: block;
+    width: min(100%, 190px);
+    height: auto;
+    margin: 12px auto 18px;
+    border-radius: 18px;
+    mix-blend-mode: multiply;
 }
 
 .game__target {
-    font-size: var(--target-size);
+    min-height: 170px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 25px;
+    border: 2px dashed var(--blush);
+    border-radius: 20px;
+    color: var(--dark-pink);
+    background: var(--pale-pink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(76px, 18vw, 116px);
     font-weight: bold;
-    margin-bottom: 20px;
+    line-height: 1;
+    text-shadow: 4px 4px 0 var(--blush);
+}
+
+.game__target:not(:empty) {
+    animation: target-pop 180ms ease-out;
+}
+
+.game__status {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.game__score,
+.game__timer {
+    margin: 0;
+    padding: 13px 10px;
+    border-radius: 14px;
+    background: #fff6f8;
+    font-weight: bold;
 }
 
 .game__score {
-    font-size: var(--score-size);
-    margin-top: 20px;
-    cursor: pointer;
+    color: var(--dark-pink);
+    font-size: 22px;
 }
 
 .game__timer {
-    font-size: var(--timer-size);
+    color: var(--ink);
+    font-size: 16px;
+    overflow-wrap: anywhere;
+}
+
+.game__controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.game__button {
+    min-width: 122px;
+    padding: 12px 22px;
+    border: 0;
+    border-radius: 999px;
+    color: white;
+    background: var(--pink);
+    box-shadow: 0 5px 0 var(--dark-pink);
+    cursor: pointer;
+    font: inherit;
+    font-weight: bold;
+    transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.game__button:hover {
+    background: #e84974;
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 var(--dark-pink);
+}
+
+.game__button:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 var(--dark-pink);
+}
+
+#resetButton {
+    color: var(--dark-pink);
+    background: var(--white);
+    border: 2px solid var(--pink);
+    box-shadow: 0 3px 0 var(--blush);
+}
+
+#resetButton:hover {
+    background: var(--pale-pink);
+    box-shadow: 0 5px 0 var(--blush);
+}
+
+.game__button:focus-visible {
+    outline: 3px solid #f6b1c5;
+    outline-offset: 4px;
+}
+
+@keyframes target-pop {
+    from { opacity: 0.3; transform: scale(0.75); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 460px) {
+    .game {
+        padding: 36px 20px 30px;
+    }
+
+    .game::before {
+        left: 25px;
+    }
+
+    .game::after {
+        right: 25px;
+    }
+
+    .game__status {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .game__controls {
+        flex-direction: column;
+    }
+
+    .game__button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 340px) {
+    body {
+        padding: 24px 10px;
+    }
+
+    .game {
+        padding: 32px 14px 24px;
+        border-radius: 22px;
+    }
+
+    .game::before,
+    .game::after {
+        width: 42px;
+        height: 42px;
+        top: -16px;
+    }
+
+    .game::before {
+        left: 18px;
+    }
+
+    .game::after {
+        right: 18px;
+    }
+
+    .game__title {
+        font-size: 30px;
+    }
+
+    .game__title::after {
+        font-size: 9px;
+        letter-spacing: 3px;
+    }
+
+    .game__target {
+        min-height: 135px;
+        font-size: 72px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+
+.game__combo {
     margin-top: 10px;
 }
 
@@ -48,11 +276,47 @@ body {
     gap: 6px;
 }
 
+/* 색상은 위 :root 변수를 따라갑니다 (디자인 담당자가 조정 가능) */
+.game__time-option {
+    padding: 6px 14px;
+    border: 2px solid var(--blush);
+    border-radius: 999px;
+    color: var(--dark-pink);
+    background: var(--white);
+    cursor: pointer;
+    font: inherit;
+    font-size: 14px;
+}
+
 .game__time-option.is-selected {
+    border-color: var(--pink);
+    color: var(--white);
+    background: var(--pink);
     font-weight: bold;
 }
 
 .game__time-option:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+.game__input {
+    box-sizing: border-box;
+    display: block;
+    width: min(100%, 360px);
+    margin: 16px auto 0;
+    padding: 10px 12px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    font: inherit;
+}
+
+.game__mode {
+    display: block;
+    margin: 24px 0 16px;
+}
+
+.game__mode select {
+    margin-left: 8px;
+    padding: 4px 8px;
 }
