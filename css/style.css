@@ -32,3 +32,28 @@ body {
     font-size: var(--timer-size);
     margin-top: 10px;
 }
+
+.game__combo {
+    margin-top: 10px;
+}
+
+.game__input {
+    box-sizing: border-box;
+    display: block;
+    width: min(100%, 360px);
+    margin: 16px auto 0;
+    padding: 10px 12px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    font: inherit;
+}
+
+.game__mode {
+    display: block;
+    margin: 24px 0 16px;
+}
+
+.game__mode select {
+    margin-left: 8px;
+    padding: 4px 8px;
+}
