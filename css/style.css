@@ -261,45 +261,6 @@ body {
     margin-top: 10px;
 }
 
-/* --- 시간 선택 --- */
-.game__times {
-    margin-top: 20px;
-}
-
-.game__times-label {
-    font-size: 14px;
-    margin-right: 8px;
-}
-
-.game__time-options {
-    display: inline-flex;
-    gap: 6px;
-}
-
-/* 색상은 위 :root 변수를 따라갑니다 (디자인 담당자가 조정 가능) */
-.game__time-option {
-    padding: 6px 14px;
-    border: 2px solid var(--blush);
-    border-radius: 999px;
-    color: var(--dark-pink);
-    background: var(--white);
-    cursor: pointer;
-    font: inherit;
-    font-size: 14px;
-}
-
-.game__time-option.is-selected {
-    border-color: var(--pink);
-    color: var(--white);
-    background: var(--pink);
-    font-weight: bold;
-}
-
-.game__time-option:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
-
 .game__input {
     box-sizing: border-box;
     display: block;

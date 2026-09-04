@@ -6,9 +6,8 @@
 
 // 게임 상태를 관리하는 변수들
 let score = 0;
-let selectedMode = 'easy';                              // 난이도 (문자셋 / 감점 / 기본 시간)
-let gameTime = CONFIG.MODES[selectedMode].GAME_TIME;    // 이번 판 시간. 시간 버튼으로 바꿀 수 있음
-let timeLeft = gameTime;
+let selectedMode = 'easy';                              // 난이도 (문자셋 / 감점 / 시간)
+let timeLeft = CONFIG.MODES[selectedMode].GAME_TIME;    // 시간은 모드가 정하며 임의로 바꿀 수 없음
 let gameInterval;
 let isGameRunning = false; // 게임이 실행 중인지 확인하는 변수
 let combo = 0;
@@ -76,7 +75,6 @@ function endGame() {
     UI.clearTarget();                                   // 타겟 문자 제거
     UI.renderCombo(combo, 0);
     UI.renderGameOver(score);
-    UI.setTimeOptionsEnabled(true);                      // 시간 변경 다시 허용
     document.removeEventListener('keydown', checkInput); // 키 입력 이벤트 제거
     isGameRunning = false;                               // 게임 실행 상태를 종료로 설정
 }
@@ -88,12 +86,11 @@ function startGame() {
 
     score = 0;
     combo = 0;
-    timeLeft = gameTime; // 모드 기본 시간 또는 플레이어가 고른 시간
+    timeLeft = getModeConfig().GAME_TIME; // 난이도가 정한 시간
     UI.renderScore(score);
     UI.renderTimer(timeLeft);
     UI.renderCombo(combo, 0);
     UI.renderTypedInput('');
-    UI.setTimeOptionsEnabled(false); // 게임 중에는 시간 변경 잠금
     setNewTargetChar(); // 첫 번째 타겟 문자 설정
 
     gameInterval = setInterval(updateTimer, CONFIG.TICK_MS); // 일정 간격으로 타이머 업데이트
@@ -105,38 +102,23 @@ function resetGame() {
     clearInterval(gameInterval); // 타이머 정지
     score = 0;
     combo = 0;
-    timeLeft = gameTime;
+    timeLeft = getModeConfig().GAME_TIME;
     UI.renderScore(score);
     UI.renderTimer(timeLeft);
     UI.renderCombo(combo, 0);
     UI.renderTypedInput('');
     UI.clearTarget();                                    // 타겟 문자 초기화
-    UI.setTimeOptionsEnabled(true);                      // 시간 변경 다시 허용
     document.removeEventListener('keydown', checkInput); // 키 입력 이벤트 제거
     isGameRunning = false;                               // 게임 실행 상태를 종료로 설정
-}
-
-// 플레이어가 시간 버튼을 눌렀을 때
-function selectTime(seconds) {
-    if (isGameRunning) return; // 게임 중에는 바꿀 수 없음
-
-    gameTime = seconds;
-    timeLeft = gameTime;
-    UI.renderTimer(timeLeft);
-    UI.highlightTime(gameTime);
 }
 
 // 페이지 로드 시 초기 설정
 function initGame() {
     UI.renderScore(0);
-    UI.renderTimer(gameTime);
+    UI.renderTimer(getModeConfig().GAME_TIME);
     UI.renderCombo(0, 0);
     UI.renderTypedInput('');
     UI.clearTarget(); // 게임 시작 전 타겟 문자 초기화
-
-    // 시간 선택 버튼 생성 후 기본값 강조
-    UI.renderTimeOptions(CONFIG.TIME_OPTIONS, selectTime);
-    UI.highlightTime(gameTime);
 
     // HTML 의 onclick 대신 여기서 버튼을 연결 (골격과 동작 분리)
     UI.startButton.addEventListener('click', startGame);
@@ -149,12 +131,9 @@ function initGame() {
 
         selectedMode = event.target.value;
 
-        // 모드를 바꾸면 그 모드의 기본 시간으로 되돌립니다.
-        // (그 뒤에 시간 버튼으로 다시 조절할 수 있습니다)
-        gameTime = getModeConfig().GAME_TIME;
-        timeLeft = gameTime;
+        // 난이도를 바꾸면 그 난이도의 시간이 그대로 적용됩니다.
+        timeLeft = getModeConfig().GAME_TIME;
         UI.renderTimer(timeLeft);
-        UI.highlightTime(gameTime);
     });
 }
 
