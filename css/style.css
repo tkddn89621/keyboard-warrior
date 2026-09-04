@@ -27,7 +27,8 @@ body {
     padding: 32px 16px;
     color: var(--ink);
     background: linear-gradient(135deg, #fff7fa 0%, #ffe7ef 52%, #fff8f0 100%);
-    font-family: "Trebuchet MS", "Malgun Gothic", sans-serif;
+    /* 온보딩 화면과 동일 — 폰트를 바꾸려면 여기와 아래 .game__title 쪽만 고치면 됩니다 */
+    font-family: "Gowun Dodum", "Malgun Gothic", sans-serif;
 }
 
 .game {
@@ -46,7 +47,8 @@ body {
     z-index: 1;
     margin: 0;
     color: var(--dark-pink);
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: "Jua", "Malgun Gothic", sans-serif;
+    font-weight: normal;
     font-size: clamp(32px, 8vw, 48px);
 }
 
@@ -59,7 +61,7 @@ body {
     margin: 11px auto 0;
     color: var(--gold);
     content: "HELLO TYPING";
-    font-family: "Trebuchet MS", sans-serif;
+    font-family: "Jua", "Malgun Gothic", sans-serif;
     font-size: 11px;
     font-weight: bold;
     letter-spacing: 4px;
@@ -89,9 +91,10 @@ body {
     border-radius: 20px;
     color: var(--dark-pink);
     background: var(--pale-pink);
-    font-family: Georgia, "Times New Roman", serif;
+    /* 출제 문자 — 대소문자와 0/O 구분이 중요한 자리라 폰트를 바꿀 때 주의 */
+    font-family: "Jua", "Malgun Gothic", sans-serif;
     font-size: clamp(76px, 18vw, 116px);
-    font-weight: bold;
+    font-weight: normal;
     line-height: 1;
     text-shadow: 4px 4px 0 var(--blush);
 }
